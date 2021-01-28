@@ -21,13 +21,14 @@ public class InteractListener implements Listener {
 	@EventHandler
 	public void on(PlayerInteractEntityEvent e) {
 		if (e.getHand() != EquipmentSlot.HAND) return;
-		EntityType type = e.getRightClicked().getType();
-		if (type == EntityType.WOLF || type == EntityType.CAT || type == EntityType.PARROT) {
+		if (e.getRightClicked() instanceof Tameable) {
 			TransferAttempt foundAttempt = null;
 			for (TransferAttempt attempt : plugin.getTransferAttempts()) {
 				if (attempt.getGiver().equals(e.getPlayer().getUniqueId())) foundAttempt = attempt;
 			}
 			if (foundAttempt == null) return;
+
+			e.setCancelled(true);
 
 			Tameable target = (Tameable) e.getRightClicked();
 			AnimalTamer owner = target.getOwner();
@@ -46,7 +47,7 @@ public class InteractListener implements Listener {
 				);
 				e.getPlayer().sendMessage(plugin.getMsg("sentSenderMsg"));
 			} else {
-				e.getPlayer().sendMessage(plugin.getMsg("notOwned")); // TODO message customisation
+				e.getPlayer().sendMessage(plugin.getMsg("notOwned"));
 			}
 			plugin.getTransferAttempts().remove(foundAttempt);
 		}
