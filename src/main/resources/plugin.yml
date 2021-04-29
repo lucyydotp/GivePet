@@ -8,3 +8,10 @@ website: https://lucyy.me
 commands:
   givepet:
     usage: 'Usage: /givepet [player|cancel]'
+    permission: "givepet.use"
+    permission-message: "No permission!"
+
+permissions:
+  givepet.use:
+    description: "Allows players to use the /givepet command"
+    default: true
