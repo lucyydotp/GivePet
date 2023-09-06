@@ -1,10 +1,10 @@
 name: GivePet
 version: ${project.version}
-main: me.lucyy.givepet.GivePet
+main: me.lucyydotp.givepet.GivePet
 api-version: 1.16
-authors: [ __lucyy ]
+authors: [ lucyydotp ]
 description: Transfer ownership of your pets to other people
-website: https://lucyy.me
+website: https://lucyydotp.me
 commands:
   givepet:
     usage: 'Usage: /givepet [player|cancel]'
