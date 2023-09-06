@@ -1,5 +1,6 @@
-package me.lucyy.givepet;
+package me.lucyydotp.givepet;
 
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.Player;
@@ -20,7 +21,6 @@ public class InteractListener implements Listener {
     @EventHandler
     public void on(PlayerInteractEntityEvent e) {
         if (e.getHand() != EquipmentSlot.HAND) return;
-
         if (!(e.getRightClicked() instanceof Tameable target)) {
             return;
         }
@@ -35,19 +35,25 @@ public class InteractListener implements Listener {
         if (owner != null && owner.getUniqueId().equals(uuid)) {
             Player newOwner = Bukkit.getPlayer(foundAttempt.receiver());
             if (newOwner == null) {
-                e.getPlayer().sendMessage(plugin.getMsg("playerLeft"));
-                plugin.transferAttempts().remove(foundAttempt);
+                e.getPlayer().sendMessage(Message.FAIL_PLAYER_LEFT.text());
+                plugin.transferAttempts().remove(uuid);
                 return;
             }
             target.setOwner(newOwner);
             target.teleport(newOwner);
-            newOwner.sendMessage(plugin.getMsg("sentReceiverMsg")
-                    .replace("{sender}", e.getPlayer().getDisplayName())
-                    .replace("{type}", target.getType().toString().toLowerCase())
-            );
-            e.getPlayer().sendMessage(plugin.getMsg("sentSenderMsg"));
+
+            newOwner.sendMessage(Message.SENT_RECEIVER.text(
+                    Placeholder.component("player", e.getPlayer().displayName()),
+                    Placeholder.component("pet", target.name())
+            ));
+
+
+            e.getPlayer().sendMessage(Message.SENT_SENDER.text(
+                    Placeholder.component("player", newOwner.displayName()),
+                    Placeholder.component("pet", target.name())
+            ));
         } else {
-            e.getPlayer().sendMessage(plugin.getMsg("notOwned"));
+            e.getPlayer().sendMessage(Message.FAIL_NOT_OWNED.text());
         }
 
         plugin.transferAttempts().remove(uuid);

@@ -1,4 +1,4 @@
-package me.lucyy.givepet;
+package me.lucyydotp.givepet;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -20,6 +20,10 @@ public final class GivePet extends JavaPlugin {
         return transferAttempts.remove(uuid) != null;
     }
 
+    /**
+     * @deprecated use minimessage instead
+     */
+    @Deprecated
     public String getMsg(String key) {
         return ChatColor.translateAlternateColorCodes('&', getConfig().getString(key));
     }
@@ -28,7 +32,7 @@ public final class GivePet extends JavaPlugin {
     public void onEnable() {
         FileConfiguration cfg = getConfig();
         cfg.options().copyDefaults(true);
-        cfg.addDefault("rightClickPrompt", "&ePlease right click the pet you would like to give");
+        cfg.addDefault("rightClickPrompt", "<yellow>Please right click the pet you would like to give");
         cfg.addDefault("playerNotFound", "&cThat player could not be found!");
         cfg.addDefault("cancelFail", "&cYou haven't tried to transfer a pet!");
         cfg.addDefault("cancelSuccess", "&aCancelled transferring a pet!");

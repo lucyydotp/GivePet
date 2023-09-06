@@ -1,5 +1,6 @@
-package me.lucyy.givepet;
+package me.lucyydotp.givepet;
 
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -28,26 +29,27 @@ public class GivePetCommand implements CommandExecutor, TabCompleter {
         if (args[0].equals("cancel")) {
             // try to remove any outstanding attempts
             if (plugin.cancelTransfer(player.getUniqueId())) {
-                sender.sendMessage(plugin.getMsg("cancelSuccess"));
-            } else sender.sendMessage(plugin.getMsg("cancelFail"));
+                sender.sendMessage(Message.CANCEL_SUCCESS.text());
+            } else sender.sendMessage(Message.CANCEL_FAIL.text());
             return true;
         }
 
         // start a new transfer
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) {
-            sender.sendMessage(plugin.getMsg("playerNotFound"));
+
+            sender.sendMessage(Message.FAIL_PLAYER_NOT_FOUND.text(Placeholder.unparsed("player", args[0])));
             return true;
         }
         if (sender.equals(target)) {
-            sender.sendMessage(plugin.getMsg("selfGive"));
+            sender.sendMessage(Message.FAIL_SELF.text());
             return true;
         }
 
         plugin.cancelTransfer(player.getUniqueId());
 
         // create new transfer and send message
-        sender.sendMessage(plugin.getMsg("rightClickPrompt"));
+        sender.sendMessage(Message.START.text());
         plugin.transferAttempts().put(player.getUniqueId(),
                 new TransferAttempt(null,
                         player.getUniqueId(),
