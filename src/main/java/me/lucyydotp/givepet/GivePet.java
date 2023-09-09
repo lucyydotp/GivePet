@@ -1,34 +1,23 @@
-package me.lucyy.givepet;
+package me.lucyydotp.givepet;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 public final class GivePet extends JavaPlugin {
 
-    private final Map<UUID, TransferAttempt> transferAttempts = new HashMap<>();
+    private final TransferManager transferManager = new TransferManager(true);
 
-    public Map<UUID, TransferAttempt> transferAttempts() {
-        return transferAttempts;
-    }
-
-    public boolean cancelTransfer(UUID uuid) {
-        return transferAttempts.remove(uuid) != null;
-    }
-
-    public String getMsg(String key) {
-        return ChatColor.translateAlternateColorCodes('&', getConfig().getString(key));
+    public TransferManager transferManager() {
+        return transferManager;
     }
 
     @Override
     public void onEnable() {
         FileConfiguration cfg = getConfig();
         cfg.options().copyDefaults(true);
-        cfg.addDefault("rightClickPrompt", "&ePlease right click the pet you would like to give");
+
+        // todo: hook these up to Message
+        cfg.addDefault("rightClickPrompt", "<yellow>Please right click the pet you would like to give");
         cfg.addDefault("playerNotFound", "&cThat player could not be found!");
         cfg.addDefault("cancelFail", "&cYou haven't tried to transfer a pet!");
         cfg.addDefault("cancelSuccess", "&aCancelled transferring a pet!");
@@ -39,10 +28,7 @@ public final class GivePet extends JavaPlugin {
         cfg.addDefault("selfGive", "&cYou can't give a pet to yourself!");
         saveConfig();
 
-        GivePetCommand cmd = new GivePetCommand(this);
-
-        getCommand("givepet").setExecutor(cmd);
-        getCommand("givepet").setTabCompleter(cmd);
+        getCommand("givepet").setExecutor(new GivePetCommand(transferManager));
 
         getServer().getPluginManager().registerEvents(new InteractListener(this), this);
 

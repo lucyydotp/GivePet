@@ -1,4 +1,4 @@
-package me.lucyy.givepet;
+package me.lucyydotp.givepet;
 
 import java.util.UUID;
 
